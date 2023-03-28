@@ -35,7 +35,7 @@ United States Congress dataset
 
 Create table from codebook/dictionary
 -- SQLBook: Code
--- Active: 1679515732880@@127.0.0.1@5432@postgres
+-- Active: 1679515993635@@127.0.0.1@5432@postgres
 -- We start by deleting the old table
 -- SQL does not allow you to create a table if one already exists
 DROP TABLE IF EXISTS us_congress_members;
@@ -86,6 +86,14 @@ Try it yourself!
 -- SQLBook: Code
 -- Write your own code
 
+DROP TABLE IF EXISTS bills_subjects;
+
+CREATE TABLE bills_subjects (
+        "Congress"   int NOT NULL,
+        bill_number  int,
+        bill_type    varchar(30),
+        bill_subject varchar(30)
+);
 
 -- SQLBook: Markup
 # <span style="color:darkblue"> II. Import CSV into SQL </span>
@@ -116,6 +124,7 @@ FROM 'D:\GitHub\qtm151spring2023\Lecture 18\data\us_congress_members.csv' ```
 WITH (DELIMITER ',', FORMAT csv, HEADER MATCH);
 ```
 -- SQLBook: Code
+-- Active: 1679515993635@@127.0.0.1@5432@postgres
 -- The argument associaated with COPY is the dataset in our server
 -- The argument associaated with FROM is a filepath name
 -- There are three options specified in WITH:
@@ -123,6 +132,11 @@ WITH (DELIMITER ',', FORMAT csv, HEADER MATCH);
 -----  FORMAT indicates that this is a CSV
 -----  HEADER MATCH indicates that the first row contains column
 -----  names and should be ignored when importing.
+
+COPY us_congress_members
+FROM '/private/tmp/data copy/us_congress_members.csv'
+WITH (DELIMITER ',', FORMAT csv, HEADER MATCH);
+
 -- SQLBook: Markup
 <font size = "5">
 
@@ -152,12 +166,8 @@ SELECT * FROM us_congress_members
 -- Write your own code
 -- Note in the instructor's computer this is:
 -- You just have to change the FROM argument
---
-COPY us_congress_members
-FROM 'D:\GitHub\qtm151spring2023\Lecture 18\data\us_congress_members.csv'
-WITH (DELIMITER ',', FORMAT csv, HEADER MATCH);
 
-
+SELECT * FROM us_congress_members
 
 -- SQLBook: Markup
 <font size = "5">
@@ -176,10 +186,12 @@ SELECT * FROM bills_actions
 -- You just have to change the FROM argument
 --
 COPY bills_actions
-FROM 'D:\GitHub\qtm151spring2023\Lecture 18\data\bills_actions.csv'
+FROM '/private/tmp/data copy/bills_actions.csv'
 WITH (DELIMITER ',', FORMAT csv, HEADER MATCH);
 
+-- SQLBook: Code
 
+SELECT * FROM bills_actions;
 -- SQLBook: Markup
 <font size = "5">
 
@@ -214,6 +226,7 @@ FROM us_congress_members
 <font size = "5">
 Display unique rows
 -- SQLBook: Code
+
 SELECT party_name       
 FROM us_congress_members
 GROUP BY party_name
@@ -222,6 +235,7 @@ GROUP BY party_name
 
 Count members of group
 -- SQLBook: Code
+
 SELECT party_name,       
        COUNT(*) AS num_members       
 FROM us_congress_members
@@ -255,9 +269,9 @@ Try it yourself!
 -- SQLBook: Code
 -- Write your own code
 
-
-
-
+SELECT COUNT(DISTINCT chamber) AS num_distinct_chamber,
+       COUNT(*) AS num_members       
+FROM us_congress_members
 
 -- SQLBook: Markup
 # <span style="color:darkblue"> IV. (Optional) Additional Resources </span>
